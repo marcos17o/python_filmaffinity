@@ -96,10 +96,25 @@ class DetailPage(Page):
     def get_genre(self):
         """Get the genre."""
         genres = []
-        dc = self.soup.find("span", {"itemprop": 'genre'})
+        dc = self.soup.find("dd", {"class": 'card-genres'})
         if dc:
-            [genres.append(i.get_text()) for i in dc.find_all("a")]
+            for a in dc.find_all("a"):
+                genres.append(a.get_text())
         return genres
+
+    def get_producer(self):
+        """Get the producer."""
+
+        dc = self.soup.find("dd", {"class": 'card-cast'})
+        dc = dc.find_all_next('span', {'class':'nb'})
+        dc = str(dc[0]).replace('<span class="nb"><span>', '')
+        dc = dc.replace('</span></span>', '')
+        dc = dc.split('/')
+
+        producer = []
+        for i in dc:
+            producer.append(i.strip())
+        return producer
 
     def get_awards(self):
         """Get the awards.
